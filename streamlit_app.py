@@ -4,7 +4,7 @@ import pandas as pd
 # Título de la app
 st.title("Tablero de Pedidos")
 
-# Crear inputs para cada campo
+# Inputs para cada campo
 pedido_input = st.text_input("Pedido: ")
 descripcion_input = st.text_input("Descripción: ")
 pago_input = st.text_input("Pago/Abono: ")
@@ -18,7 +18,7 @@ agencia_input = st.radio("Agencia:", ["BANRURAL", "BANCO INDUSTRIAL", "BANGO GYT
 
 documento_input = st.text_input("No. documento: ")
 
-# Crear un dataframe para almacenar los pedidos
+# Crear un dataframe para almacenar los pedidos (incluyendo Agencia)
 if 'pedidos' not in st.session_state:
     st.session_state.pedidos = pd.DataFrame(columns=[
         "Número de Pedido", "Descripción", "Pago/Abono", "Agencia", "Fecha", "Operación", "No. documento"
@@ -42,6 +42,6 @@ if st.button("Agregar detalles del Pedido"):
     else:
         st.error("Por favor, ingrese un número de pedido válido")
 
-# Mostrar la tabla de pedidos
+# Mostrar la tabla de pedidos con Agencia incluida
 st.subheader("Pedidos Ingresados")
 st.dataframe(st.session_state.pedidos)
