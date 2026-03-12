@@ -14,7 +14,8 @@ def convertir_a_numero(valor):
 # Función para insertar filas en blanco al cambiar la fecha
 def insertar_filas_blanco_por_fecha(df, columna_fecha="Fecha"):
     df_copy = df.copy()
-    df_copy[columna_fecha] = pd.to_datetime(df_copy[columna_fecha], errors='coerce')
+    # Convertimos usando dayfirst=True para DD/MM/YYYY
+    df_copy[columna_fecha] = pd.to_datetime(df_copy[columna_fecha], format="%d/%m/%Y", errors='coerce')
     
     new_rows = []
     prev_fecha = None
@@ -34,7 +35,9 @@ st.title("Tablero de Pedidos")
 pedido_input = st.text_input("Pedido: ")
 descripcion_input = st.text_input("Descripción: ")
 pago_input = st.text_input("Pago/Abono: ")
-fecha_input = st.text_input("Fecha (YYYY-MM-DD): ")
+
+# Indicamos que la fecha debe ingresarse DD/MM/YYYY
+fecha_input = st.text_input("Fecha (DD/MM/YYYY): ", placeholder="DD/MM/YYYY")
 
 operacion_input = st.radio("Operación:", ["TRANSFERENCIA", "ACH", "DEPÓSITO"])
 agencia_input = st.radio("Agencia:", ["BANRURAL", "BANCO INDUSTRIAL", "BANGO GYT", "BANTRAB"])
