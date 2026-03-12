@@ -9,7 +9,10 @@ pedido_input = st.text_input("Pedido: ")
 descripcion_input = st.text_input("Descripción: ")
 pago_input = st.text_input("Pago/Abono: ")
 fecha_input = st.text_input("Fecha: ")
-operacion_input = st.text_input("Operación: ")
+
+# Botones de opción para Operación
+operacion_input = st.radio("Operación:", ["TRANSFERENCIA", "ACH", "DEPÓSITO"])
+
 documento_input = st.text_input("No. documento: ")
 
 # Crear un dataframe para almacenar los pedidos
