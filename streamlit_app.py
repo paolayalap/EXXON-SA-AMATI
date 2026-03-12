@@ -7,13 +7,18 @@ st.title("Tablero de Pedidos")
 
 # Crear un lugar para ingresar el número de pedido
 pedido_input = st.text_input("Pedido: ")
+descripcion_input = st.text_input("Descripción: ")
+pago_input = st.text_input("Pago/Abono: ")
+fecha_input = st.text_input("Fecha: ")
+operacion_input = st.text_input("Operación: ")
+documento_input = st.text_input("No. documento: ")
 
 # Crear un dataframe para almacenar los pedidos
 if 'pedidos' not in st.session_state:
     st.session_state.pedidos = pd.DataFrame(columns=["Número de Pedido"])
 
 # Botón para agregar el pedido
-if st.button("Agregar Pedido"):
+if st.button("Agregar detalles del Pedido"):
     if pedido_input.strip() != "":
         # Agregar al dataframe
         st.session_state.pedidos = pd.concat(
