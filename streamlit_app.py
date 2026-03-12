@@ -42,6 +42,7 @@ if st.button("Agregar detalles del Pedido"):
     else:
         st.error("Por favor, ingrese un número de pedido válido")
 
-# Mostrar la tabla de pedidos con Agencia incluida
+# Mostrar la tabla de pedidos con Agencia justo después de Pago/Abono
 st.subheader("Pedidos Ingresados")
-st.dataframe(st.session_state.pedidos)
+column_order = ["Número de Pedido", "Descripción", "Pago/Abono", "Agencia", "Fecha", "Operación", "No. documento"]
+st.dataframe(st.session_state.pedidos[column_order])
