@@ -18,7 +18,7 @@ agencia_input = st.radio("Agencia:", ["BANRURAL", "BANCO INDUSTRIAL", "BANGO GYT
 
 documento_input = st.text_input("No. documento: ")
 
-# Inputs para Débito y Crédito con color usando HTML y CSS
+# Inputs para Débito y Crédito con color usando CSS
 st.markdown("""
 <style>
 input.debito {background-color: #d4edda !important;}   /* verde claro */
@@ -28,20 +28,20 @@ input.credito {background-color: #f8d7da !important;}  /* rojo claro */
 
 col1, col2 = st.columns(2)
 with col1:
-    debito_input = st.text_input("Débito:", key="debito", placeholder="Q 0.00", label_visibility="visible", help="Ingrese la cantidad de Débito")
+    debito_input = st.text_input("Débito:", key="debito", placeholder="Q 0.00")
 with col2:
-    credito_input = st.text_input("Crédito:", key="credito", placeholder="Q 0.00", label_visibility="visible", help="Ingrese la cantidad de Crédito")
+    credito_input = st.text_input("Crédito:", key="credito", placeholder="Q 0.00")
 
-# Crear un dataframe para almacenar los pedidos (incluyendo Débito y Crédito)
+# --- CREAR DATAFRAME INICIAL CON TODAS LAS COLUMNAS ---
 if 'pedidos' not in st.session_state:
     st.session_state.pedidos = pd.DataFrame(columns=[
-        "Número de Pedido", "Descripción", "Pago/Abono", "Agencia", "Fecha", "Operación", "No. documento", "Débito", "Crédito"
+        "Número de Pedido", "Descripción", "Pago/Abono", "Agencia",
+        "Fecha", "Operación", "No. documento", "Débito", "Crédito"
     ])
 
 # Botón para agregar el pedido
 if st.button("Agregar detalles del Pedido"):
     if pedido_input.strip() != "":
-        # Agregar al dataframe
         nuevo_pedido = pd.DataFrame({
             "Número de Pedido": [pedido_input],
             "Descripción": [descripcion_input],
@@ -58,7 +58,14 @@ if st.button("Agregar detalles del Pedido"):
     else:
         st.error("Por favor, ingrese un número de pedido válido")
 
-# Mostrar la tabla de pedidos con Débito y Crédito
+# --- MOSTRAR TABLA ---
 st.subheader("Pedidos Ingresados")
-column_order = ["Número de Pedido", "Descripción", "Pago/Abono", "Agencia", "Fecha", "Operación", "No. documento", "Débito", "Crédito"]
-st.dataframe(st.session_state.pedidos[column_order])
+
+# Validar que las columnas existen antes de mostrar
+column_order = ["Número de Pedido", "Descripción", "Pago/Abono", "Agencia",
+                "Fecha", "Operación", "No. documento", "Débito", "Crédito"]
+
+# Filtrar solo las columnas que realmente existen en el dataframe
+column_order_existente = [col for col in column_order if col in st.session_state.pedidos.columns]
+
+st.dataframe(st.session_state.pedidos[column_order_existente])
