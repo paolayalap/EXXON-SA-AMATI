@@ -15,7 +15,7 @@ def convertir_a_numero(valor):
 st.title("Tablero de Pedidos")
 
 # Dividir pantalla en dos columnas: izquierda inputs, derecha tabla
-col1, col2 = st.columns([1, 2])  # Ajusta [1,2] para dar más espacio a la tabla
+col1, col2 = st.columns([0.7, 3.2])  # Ajusta [1,2] para dar más espacio a la tabla
 
 # --- COL1: Inputs ---
 with col1:
