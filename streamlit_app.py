@@ -48,7 +48,7 @@ if st.button("Agregar detalles del Pedido"):
         # Convertir Débito y Crédito a números
         debito_val = convertir_a_numero(debito_input)
         credito_val = convertir_a_numero(credito_input)
-        apertura_val = credito_val - debito_val
+        apertura_val = debito_val - credito_val
 
         # Agregar nuevo pedido
         nuevo_pedido = pd.DataFrame({
