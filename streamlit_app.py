@@ -18,10 +18,24 @@ agencia_input = st.radio("Agencia:", ["BANRURAL", "BANCO INDUSTRIAL", "BANGO GYT
 
 documento_input = st.text_input("No. documento: ")
 
-# Crear un dataframe para almacenar los pedidos (incluyendo Agencia)
+# Inputs para Débito y Crédito con color usando HTML y CSS
+st.markdown("""
+<style>
+input.debito {background-color: #d4edda !important;}   /* verde claro */
+input.credito {background-color: #f8d7da !important;}  /* rojo claro */
+</style>
+""", unsafe_allow_html=True)
+
+col1, col2 = st.columns(2)
+with col1:
+    debito_input = st.text_input("Débito:", key="debito", placeholder="Q 0.00", label_visibility="visible", help="Ingrese la cantidad de Débito")
+with col2:
+    credito_input = st.text_input("Crédito:", key="credito", placeholder="Q 0.00", label_visibility="visible", help="Ingrese la cantidad de Crédito")
+
+# Crear un dataframe para almacenar los pedidos (incluyendo Débito y Crédito)
 if 'pedidos' not in st.session_state:
     st.session_state.pedidos = pd.DataFrame(columns=[
-        "Número de Pedido", "Descripción", "Pago/Abono", "Agencia", "Fecha", "Operación", "No. documento"
+        "Número de Pedido", "Descripción", "Pago/Abono", "Agencia", "Fecha", "Operación", "No. documento", "Débito", "Crédito"
     ])
 
 # Botón para agregar el pedido
@@ -35,14 +49,16 @@ if st.button("Agregar detalles del Pedido"):
             "Agencia": [agencia_input],
             "Fecha": [fecha_input],
             "Operación": [operacion_input],
-            "No. documento": [documento_input]
+            "No. documento": [documento_input],
+            "Débito": [debito_input],
+            "Crédito": [credito_input]
         })
         st.session_state.pedidos = pd.concat([st.session_state.pedidos, nuevo_pedido], ignore_index=True)
         st.success(f"Pedido {pedido_input} agregado")
     else:
         st.error("Por favor, ingrese un número de pedido válido")
 
-# Mostrar la tabla de pedidos con Agencia justo después de Pago/Abono
+# Mostrar la tabla de pedidos con Débito y Crédito
 st.subheader("Pedidos Ingresados")
-column_order = ["Número de Pedido", "Descripción", "Pago/Abono", "Agencia", "Fecha", "Operación", "No. documento"]
+column_order = ["Número de Pedido", "Descripción", "Pago/Abono", "Agencia", "Fecha", "Operación", "No. documento", "Débito", "Crédito"]
 st.dataframe(st.session_state.pedidos[column_order])
