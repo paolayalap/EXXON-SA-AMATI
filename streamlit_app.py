@@ -35,8 +35,6 @@ st.title("Tablero de Pedidos")
 pedido_input = st.text_input("Pedido: ")
 descripcion_input = st.text_input("Descripción: ")
 pago_input = st.text_input("Pago/Abono: ")
-
-# Indicamos que la fecha debe ingresarse DD/MM/YYYY
 fecha_input = st.text_input("Fecha (DD/MM/YYYY): ", placeholder="DD/MM/YYYY")
 
 operacion_input = st.radio("Operación:", ["TRANSFERENCIA", "ACH", "DEPÓSITO"])
@@ -84,10 +82,17 @@ if st.button("Agregar detalles del Pedido"):
     else:
         st.error("Por favor, ingrese un número de pedido válido")
 
-# --- Mostrar tabla con filas en blanco por cambio de fecha ---
+# --- Mostrar tabla ordenada por Fecha con filas en blanco ---
 st.subheader("Pedidos Ingresados")
 if not st.session_state.pedidos.empty:
-    df_mostrado = insertar_filas_blanco_por_fecha(st.session_state.pedidos, columna_fecha="Fecha")
+    # Convertimos Fecha a datetime para ordenar
+    df_sorted = st.session_state.pedidos.copy()
+    df_sorted["Fecha_dt"] = pd.to_datetime(df_sorted["Fecha"], format="%d/%m/%Y", errors='coerce')
+    df_sorted = df_sorted.sort_values(by="Fecha_dt").drop(columns=["Fecha_dt"]).reset_index(drop=True)
+
+    # Insertar filas en blanco al cambiar de fecha
+    df_mostrado = insertar_filas_blanco_por_fecha(df_sorted, columna_fecha="Fecha")
+
     column_order = [
         "Número de Pedido", "Descripción", "Pago/Abono", "Agencia",
         "Fecha", "Operación", "No. documento", "Débito", "Crédito", "Apertura"
