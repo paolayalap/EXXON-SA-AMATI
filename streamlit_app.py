@@ -1,11 +1,10 @@
-
 import streamlit as st
 import pandas as pd
 
 # Título de la app
 st.title("Tablero de Pedidos")
 
-# Crear un lugar para ingresar el número de pedido
+# Crear inputs para cada campo
 pedido_input = st.text_input("Pedido: ")
 descripcion_input = st.text_input("Descripción: ")
 pago_input = st.text_input("Pago/Abono: ")
@@ -15,16 +14,23 @@ documento_input = st.text_input("No. documento: ")
 
 # Crear un dataframe para almacenar los pedidos
 if 'pedidos' not in st.session_state:
-    st.session_state.pedidos = pd.DataFrame(columns=["Número de Pedido"])
+    st.session_state.pedidos = pd.DataFrame(columns=[
+        "Número de Pedido", "Descripción", "Pago/Abono", "Fecha", "Operación", "No. documento"
+    ])
 
 # Botón para agregar el pedido
 if st.button("Agregar detalles del Pedido"):
     if pedido_input.strip() != "":
         # Agregar al dataframe
-        st.session_state.pedidos = pd.concat(
-            [st.session_state.pedidos, pd.DataFrame({"Número de Pedido": [pedido_input]})],
-            ignore_index=True
-        )
+        nuevo_pedido = pd.DataFrame({
+            "Número de Pedido": [pedido_input],
+            "Descripción": [descripcion_input],
+            "Pago/Abono": [pago_input],
+            "Fecha": [fecha_input],
+            "Operación": [operacion_input],
+            "No. documento": [documento_input]
+        })
+        st.session_state.pedidos = pd.concat([st.session_state.pedidos, nuevo_pedido], ignore_index=True)
         st.success(f"Pedido {pedido_input} agregado")
     else:
         st.error("Por favor, ingrese un número de pedido válido")
