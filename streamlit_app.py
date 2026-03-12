@@ -14,8 +14,8 @@ def convertir_a_numero(valor):
 # Título
 st.title("Tablero de Pedidos")
 
-# --- Dividir pantalla en dos columnas ---
-col1, col2 = st.columns([1, 1])  # Ajusta los números para cambiar ancho relativo
+# Dividir pantalla en dos columnas: izquierda inputs, derecha tabla
+col1, col2 = st.columns([1, 2])  # Ajusta [1,2] para dar más espacio a la tabla
 
 # --- COL1: Inputs ---
 with col1:
@@ -24,6 +24,7 @@ with col1:
     pago_input = st.text_input("Pago/Abono: ")
     fecha_input = st.text_input("Fecha: ")
 
+    # Operación y Agencia
     operacion_input = st.radio("Operación:", ["TRANSFERENCIA", "ACH", "DEPÓSITO"])
     agencia_input = st.radio("Agencia:", ["BANRURAL", "BANCO INDUSTRIAL", "BANGO GYT", "BANTRAB"])
 
@@ -36,13 +37,13 @@ with col1:
     with cold2:
         credito_input = st.text_input("Crédito:", key="credito", placeholder="Q 0.00")
 
-    # Botón agregar
+    # Botón para agregar pedido
     if st.button("Agregar detalles del Pedido"):
         if pedido_input.strip() != "":
-            # Convertir a números
+            # Convertir Débito y Crédito a números
             debito_val = convertir_a_numero(debito_input)
             credito_val = convertir_a_numero(credito_input)
-            apertura_val = debito_val - credito_val  # como me dijiste
+            apertura_val = debito_val - credito_val  # cálculo de Apertura
 
             nuevo_pedido = pd.DataFrame({
                 "Número de Pedido": [pedido_input],
@@ -57,6 +58,7 @@ with col1:
                 "Apertura": [apertura_val]
             })
 
+            # Crear dataframe inicial si no existe
             if 'pedidos' not in st.session_state:
                 st.session_state.pedidos = pd.DataFrame(columns=nuevo_pedido.columns)
 
@@ -74,6 +76,6 @@ with col2:
             "Fecha", "Operación", "No. documento", "Débito", "Crédito", "Apertura"
         ]
         column_order_existente = [col for col in column_order if col in st.session_state.pedidos.columns]
-        st.dataframe(st.session_state.pedidos[column_order_existente])
+        st.dataframe(st.session_state.pedidos[column_order_existente], height=600)
     else:
         st.info("No hay pedidos agregados aún")
