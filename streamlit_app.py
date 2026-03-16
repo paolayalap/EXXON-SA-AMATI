@@ -95,23 +95,24 @@ if not st.session_state.pedidos.empty:
     st.subheader("Pedidos Ingresados")
     st.dataframe(df_mostrado[column_order_existente], height=600)
 
-    import io
-
-    # Crear un buffer en memoria
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-        st.session_state.pedidos.to_excel(writer, index=False, sheet_name='Pedidos')
-        writer.save()
-    output.seek(0)
-    
-    # Botón de descarga
-    st.download_button(
-        label="Descargar tabla como Excel",
-        data=output,
-        file_name="pedidos.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
-
-
 else:
     st.info("No hay pedidos agregados aún")
+
+
+# --- Botón de descarga ---
+import io
+
+# Crear un buffer en memoria
+output = io.BytesIO()
+with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+    df_mostrado[column_order_existente].to_excel(writer, index=False, sheet_name='Pedidos')
+    writer.save()
+output.seek(0)
+
+# Botón de descarga
+st.download_button(
+    label="Descargar tabla como Excel",
+    data=output,
+    file_name="pedidos.xlsx",
+    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
