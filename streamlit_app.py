@@ -99,14 +99,15 @@ if not st.session_state.pedidos.empty:
 
     st.subheader("Pedidos Ingresados")
     st.dataframe(df_mostrado[column_order_existente], height=600)
-
-    # --- BOTÓN DE DESCARGA ---
+    
+    # Crear buffer en memoria
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
         df_mostrado[column_order_existente].to_excel(writer, index=False, sheet_name='Pedidos')
-        writer.save()
+    # NO se llama writer.save()
     output.seek(0)
-
+    
+    # Botón de descarga
     st.download_button(
         label="Descargar tabla como Excel",
         data=output,
