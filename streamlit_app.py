@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import io
 
 def convertir_a_numero(valor):
     if valor:
@@ -26,6 +27,7 @@ def insertar_filas_blanco_por_fecha(df, columna_fecha="Fecha"):
 
 st.title("Tablero de Pedidos")
 
+# --- Inputs ---
 pedido_input = st.text_input("Pedido: ")
 descripcion_input = st.text_input("Descripción: ")
 pago_input = st.text_input("Pago/Abono: ")
@@ -40,12 +42,14 @@ with col1:
 with col2:
     credito_input = st.text_input("Crédito:", key="credito", placeholder="Q 0.00")
 
+# --- Inicializar dataframe ---
 if 'pedidos' not in st.session_state:
     st.session_state.pedidos = pd.DataFrame(columns=[
         "Número de Pedido", "Descripción", "Pago/Abono", "Agencia",
         "Fecha", "Operación", "No. documento", "Débito", "Crédito", "Apertura"
     ])
 
+# --- Botón agregar pedido ---
 if st.button("Agregar detalles del Pedido"):
     if pedido_input.strip() != "":
         debito_val = convertir_a_numero(debito_input)
@@ -67,12 +71,12 @@ if st.button("Agregar detalles del Pedido"):
     else:
         st.error("Por favor, ingrese un número de pedido válido")
 
-# --- Recalcular Apertura después de ordenar por fecha ---
+# --- Recalcular Apertura y mostrar tabla ---
 if not st.session_state.pedidos.empty:
     df_sorted = st.session_state.pedidos.copy()
     df_sorted["Fecha_dt"] = pd.to_datetime(df_sorted["Fecha"], format="%d/%m/%Y", errors='coerce')
     df_sorted = df_sorted.sort_values(by="Fecha_dt").reset_index(drop=True)
-    
+
     # Recalcular Apertura acumulada
     apertura_acum = []
     for i, row in df_sorted.iterrows():
@@ -83,20 +87,32 @@ if not st.session_state.pedidos.empty:
         else:
             apertura_acum.append((debito_val - credito_val) + apertura_acum[i-1])
     df_sorted["Apertura"] = apertura_acum
-    
+
     # Insertar filas en blanco por cambio de fecha
     df_mostrado = insertar_filas_blanco_por_fecha(df_sorted, columna_fecha="Fecha")
-    
+
     column_order = [
         "Número de Pedido", "Descripción", "Pago/Abono", "Agencia",
         "Fecha", "Operación", "No. documento", "Débito", "Crédito", "Apertura"
     ]
     column_order_existente = [col for col in column_order if col in df_mostrado.columns]
+
     st.subheader("Pedidos Ingresados")
     st.dataframe(df_mostrado[column_order_existente], height=600)
 
+    # --- BOTÓN DE DESCARGA ---
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df_mostrado[column_order_existente].to_excel(writer, index=False, sheet_name='Pedidos')
+        writer.save()
+    output.seek(0)
+
+    st.download_button(
+        label="Descargar tabla como Excel",
+        data=output,
+        file_name="pedidos.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
 else:
     st.info("No hay pedidos agregados aún")
-
-
-
