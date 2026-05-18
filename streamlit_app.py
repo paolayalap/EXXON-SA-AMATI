@@ -79,6 +79,7 @@ if st.button("Agregar detalles del Pedido"):
 if not st.session_state.pedidos.empty:
     df_sorted = st.session_state.pedidos.copy()
     #df_sorted["Fecha_dt"] = pd.to_datetime(df_sorted["Fecha"], format="%d/%m/%Y", errors='coerce')
+    #df_sorted["Fecha_dt"] = pd.to_datetime(df_sorted["Fecha"], dayfirst=True, errors='coerce')
     df_sorted["Fecha_dt"] = pd.to_datetime(df_sorted["Fecha"], dayfirst=True, errors='coerce')
     df_sorted = df_sorted.sort_values(by="Fecha_dt").reset_index(drop=True)
 
