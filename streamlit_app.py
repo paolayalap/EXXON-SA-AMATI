@@ -39,16 +39,17 @@ referencia_input = st.text_input("No. de Referencia:")  # <-- NUEVO INPUT
 
 col1, col2 = st.columns(2)
 with col1:
-    debito_input = st.text_input("Débito:", key="debito", placeholder="Q 0.00")
-with col2:
     credito_input = st.text_input("Crédito:", key="credito", placeholder="Q 0.00")
+with col2:
+    debito_input = st.text_input("Débito:", key="debito", placeholder="Q 0.00")
+    
 
 # --- Inicializar dataframe ---
 if 'pedidos' not in st.session_state:
     st.session_state.pedidos = pd.DataFrame(columns=[
         "Número de Pedido", "Descripción", "Pago/Abono", "Agencia",
         "Fecha", "Operación", "No. documento", "No. de referencia",
-        "Débito", "Crédito", "Apertura"
+        "Crédito", "Débito", "Apertura"
     ])
 
 # --- Botón agregar pedido ---
@@ -65,8 +66,8 @@ if st.button("Agregar detalles del Pedido"):
             "Operación": [operacion_input],
             "No. documento": [documento_input],
             "No. de referencia": [referencia_input],   # <-- NUEVA COLUMNA
-            "Débito": [debito_val],
             "Crédito": [credito_val],
+            "Débito": [debito_val],
             "Apertura": [0]  # temporal, se recalcula después
         })
         st.session_state.pedidos = pd.concat([st.session_state.pedidos, nuevo_pedido], ignore_index=True)
@@ -99,7 +100,7 @@ if not st.session_state.pedidos.empty:
     column_order = [
         "Número de Pedido", "Descripción", "Pago/Abono", "Agencia",
         "Fecha", "Operación", "No. documento", "No. de referencia",
-        "Crédito", "Debito", "Apertura"
+        "Crédito", "Débito", "Apertura"
     ]
     column_order_existente = [col for col in column_order if col in df_mostrado.columns]
 
