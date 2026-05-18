@@ -35,6 +35,7 @@ fecha_input = st.text_input("Fecha (DD/MM/YYYY): ", placeholder="DD/MM/YYYY")
 operacion_input = st.radio("Operación:", ["TRANSFERENCIA", "ACH", "DEPÓSITO"])
 agencia_input = st.radio("Agencia:", ["BANRURAL", "BANCO INDUSTRIAL", "BANGO GYT", "BANTRAB"])
 documento_input = st.text_input("No. documento:")
+referencia_input = st.text_input("No. de Referencia:")  # <-- NUEVO INPUT
 
 col1, col2 = st.columns(2)
 with col1:
@@ -46,7 +47,8 @@ with col2:
 if 'pedidos' not in st.session_state:
     st.session_state.pedidos = pd.DataFrame(columns=[
         "Número de Pedido", "Descripción", "Pago/Abono", "Agencia",
-        "Fecha", "Operación", "No. documento", "Débito", "Crédito", "Apertura"
+        "Fecha", "Operación", "No. documento", "No. de referencia",
+        "Débito", "Crédito", "Apertura"
     ])
 
 # --- Botón agregar pedido ---
@@ -62,6 +64,7 @@ if st.button("Agregar detalles del Pedido"):
             "Fecha": [fecha_input],
             "Operación": [operacion_input],
             "No. documento": [documento_input],
+            "No. de referencia": [referencia_input],   # <-- NUEVA COLUMNA
             "Débito": [debito_val],
             "Crédito": [credito_val],
             "Apertura": [0]  # temporal, se recalcula después
@@ -91,23 +94,23 @@ if not st.session_state.pedidos.empty:
     # Insertar filas en blanco por cambio de fecha
     df_mostrado = insertar_filas_blanco_por_fecha(df_sorted, columna_fecha="Fecha")
 
+    # --- Orden de columnas con la nueva columna incluida ---
     column_order = [
         "Número de Pedido", "Descripción", "Pago/Abono", "Agencia",
-        "Fecha", "Operación", "No. documento", "Débito", "Crédito", "Apertura"
+        "Fecha", "Operación", "No. documento", "No. de referencia",
+        "Débito", "Crédito", "Apertura"
     ]
     column_order_existente = [col for col in column_order if col in df_mostrado.columns]
 
     st.subheader("Pedidos Ingresados")
     st.dataframe(df_mostrado[column_order_existente], height=600)
     
-    # Crear buffer en memoria
+    # --- Botón de descarga ---
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
         df_mostrado[column_order_existente].to_excel(writer, index=False, sheet_name='Pedidos')
-    # NO se llama writer.save()
     output.seek(0)
-    
-    # Botón de descarga
+
     st.download_button(
         label="Descargar tabla como Excel",
         data=output,
