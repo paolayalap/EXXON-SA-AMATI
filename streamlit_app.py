@@ -77,7 +77,8 @@ if st.button("Agregar detalles del Pedido"):
 # --- Recalcular Apertura y mostrar tabla ---
 if not st.session_state.pedidos.empty:
     df_sorted = st.session_state.pedidos.copy()
-    df_sorted["Fecha_dt"] = pd.to_datetime(df_sorted["Fecha"], format="%d/%m/%Y", errors='coerce')
+    #df_sorted["Fecha_dt"] = pd.to_datetime(df_sorted["Fecha"], format="%d/%m/%Y", errors='coerce')
+    df_sorted["Fecha_dt"] = pd.to_datetime(df_sorted["Fecha"], dayfirst=True, errors='coerce')
     df_sorted = df_sorted.sort_values(by="Fecha_dt").reset_index(drop=True)
 
     # Recalcular Apertura acumulada
@@ -98,7 +99,7 @@ if not st.session_state.pedidos.empty:
     column_order = [
         "Número de Pedido", "Descripción", "Pago/Abono", "Agencia",
         "Fecha", "Operación", "No. documento", "No. de referencia",
-        "Débito", "Crédito", "Apertura"
+        "Crédito", "Debito", "Apertura"
     ]
     column_order_existente = [col for col in column_order if col in df_mostrado.columns]
 
