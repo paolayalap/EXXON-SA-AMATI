@@ -33,7 +33,7 @@ descripcion_input = st.text_input("Descripción: ")
 pago_input = st.text_input("Pago/Abono: ")
 fecha_input = st.text_input("Fecha (DD/MM/YYYY): ", placeholder="DD/MM/YYYY")
 operacion_input = st.radio("Operación:", ["TRANSFERENCIA", "ACH", "DEPÓSITO"])
-agencia_input = st.radio("Agencia:", ["BANRURAL", "BANCO INDUSTRIAL", "BANGO GYT", "BANTRAB"])
+agencia_input = st.radio("Agencia:", ["BANRURAL", "BANCO INDUSTRIAL", "BANCO GYT", "BANTRAB"])
 documento_input = st.text_input("No. documento:")
 referencia_input = st.text_input("No. de Referencia:")  # <-- NUEVO INPUT
 
